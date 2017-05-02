@@ -114,19 +114,17 @@ def _show(info):
             cpu['Thread Count'],
             )
 
-    cnt, total, unit = 0, 0, None
+    metric_name="dmidecode_memory_module_size"
+    print('#HELP %s The number of bytes available per memory module' % (metric_name))
+    print('#TYPE %s untyped' % (metric_name))
     for mem in _get('memory device'):
-        if mem['Size'] == 'No Module Installed':
-            continue
-        i, unit = mem['Size'].split()
-        cnt += 1
-        total += int(i)
-    print '%d memory stick(s), %d %s in total' % (
-        cnt,
-        total,
-        unit,
-        )
+        print('%s{device="%s"} %s' % (metric_name, mem['Locator'], mem['Size'].split()[0]))
 
+    metric_name="dmidecode_memory_module_speed"
+    print('#HELP %s The speed of each memory module' % (metric_name))
+    print('#TYPE %s untyped' % (metric_name))
+    for mem in _get('memory device'):
+        print('%s{device="%s"} %s' % (metric_name, mem['Locator'], mem['Speed'].split()[0]))
 
 if __name__ == '__main__':
     profile()
